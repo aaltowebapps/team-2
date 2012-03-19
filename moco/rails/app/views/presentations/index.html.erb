@@ -1,0 +1,29 @@
+<h1>Listing presentations</h1>
+
+<table>
+  <tr>
+    <th>Owner</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Currentslide</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @presentations.each do |presentation| %>
+  <tr>
+    <td><%= presentation.owner %></td>
+    <td><%= presentation.name %></td>
+    <td><%= presentation.description %></td>
+    <td><%= presentation.currentSlide %></td>
+    <td><%= link_to 'Show', presentation %></td>
+    <td><%= link_to 'Edit', edit_presentation_path(presentation) %></td>
+    <td><%= link_to 'Destroy', presentation, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Presentation', new_presentation_path %>
