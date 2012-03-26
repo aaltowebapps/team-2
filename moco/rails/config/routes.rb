@@ -1,7 +1,12 @@
 Moco::Application.routes.draw do
 
 
-  resources :presentations
+  resources :presentations do
+    member do
+      get 'status'
+      post 'slideUpdate'
+    end
+  end
 
   devise_for :users
 
