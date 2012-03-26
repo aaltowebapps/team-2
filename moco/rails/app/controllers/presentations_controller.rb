@@ -32,7 +32,7 @@ class PresentationsController < ApplicationController
     end
   end
 
-  # GET /presentations/1/edit
+  # get /presentations/1/edit
   def edit
     @presentation = Presentation.find(params[:id])
   end
@@ -53,7 +53,7 @@ class PresentationsController < ApplicationController
     end
   end
 
-  # PUT /presentations/1
+  # put /presentations/1
   # PUT /presentations/1.json
   def update
     @presentation = Presentation.find(params[:id])
@@ -80,4 +80,20 @@ class PresentationsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # post /presentations/1/slideUpdate
+  def slideUpdate
+    @presentation = Presentation.find(params[:id])
+    @presentation.currentSlide = params[:slide]
+    @presentation.save
+
+    render json: { :status => "succeeded" }
+  end
+
+  # get /presentations/1/status
+  def status
+    @presentation = Presentation.find(params[:id])
+    render json: { :currentSlide => @presentation.currentSlide  }
+  end
+
 end
