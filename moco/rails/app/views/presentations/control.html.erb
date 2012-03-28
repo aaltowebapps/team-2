@@ -1,0 +1,35 @@
+
+<h3>Controller for presentation</h3>
+
+<script type="text/javascript">
+  var id = <%= @presentation.id %>;
+  var slide = <%= @presentation.currentSlide %>;
+
+  $(document).ready(function(){
+    $("#next").click(function() {
+      slide++;
+      $.ajax({
+        type: 'POST',
+        url: 'slideUpdate',
+        data: 'id='+id+'&slide='+slide,
+        success: function(){},
+        dataType: 'json'
+      }); 
+    });
+    $("#prev").click(function() {
+      slide--;
+      $.ajax({
+        type: 'POST',
+        url: 'slideUpdate',
+        data: 'id='+id+'&slide='+slide,
+        success: function(){},
+        dataType: 'json'
+      });
+    });
+  });
+
+</script>
+
+<button id="next">next slide</button>
+<button id="prev">previous slide</button>
+

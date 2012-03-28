@@ -1,7 +1,7 @@
 class PresentationsController < ApplicationController
 
   after_filter :set_access_control_headers
- 
+
   def set_access_control_headers
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Request-Method'] = '*'
@@ -87,6 +87,11 @@ class PresentationsController < ApplicationController
       format.html { redirect_to presentations_url }
       format.json { head :no_content }
     end
+  end
+
+  # GET /presentations/1/control
+  def control
+     @presentation = Presentation.find(params[:id])
   end
 
   # post /presentations/1/slideUpdate

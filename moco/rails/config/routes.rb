@@ -5,6 +5,7 @@ Moco::Application.routes.draw do
     member do
       get 'status'
       post 'slideUpdate'
+      get 'control'
     end
   end
 
