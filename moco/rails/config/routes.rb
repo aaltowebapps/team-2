@@ -11,7 +11,11 @@ Moco::Application.routes.draw do
 
   devise_for :users
 
-  root :to => "users#index"
+  # sign in page as default
+  root :to => redirect("/users/sign_in")
+
+  # presentations page as user default
+  match '/me' => "presentations#index", :as => :user_root
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

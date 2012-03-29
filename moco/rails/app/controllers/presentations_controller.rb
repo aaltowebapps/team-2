@@ -1,10 +1,18 @@
 class PresentationsController < ApplicationController
 
+  # user must be logged in
+  before_filter :check_login
   after_filter :set_access_control_headers
 
   def set_access_control_headers
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Request-Method'] = '*'
+  end
+
+  def check_login
+	  if not user_signed_in? # redirect to login
+		  redirect_to "/users/sign_in" and return
+	  end
   end
 
   # GET /presentations
