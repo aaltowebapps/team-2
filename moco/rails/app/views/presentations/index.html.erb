@@ -1,29 +1,22 @@
-<h1>Listing presentations</h1>
+<h1>My presentations <%= link_to 'New Presentation', new_presentation_path, :class => "btn btn-success btn-large" %> </h1>
+<br/>
 
-<table>
-  <tr>
-    <th>Owner</th>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Currentslide</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
+<ul class="thumbnails">
 <% @presentations.each do |presentation| %>
-  <tr>
-    <td><%= presentation.owner %></td>
-    <td><%= presentation.name %></td>
-    <td><%= presentation.description %></td>
-    <td><%= presentation.currentSlide %></td>
-    <td><%= link_to 'Show', presentation %></td>
-    <td><%= link_to 'Edit', edit_presentation_path(presentation) %></td>
-    <td><%= link_to 'Destroy', presentation, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
+  <li class="span3">
+    <div class="thumbnail well">
+      <div class="caption"><h4><%= presentation.name %></h4>
+      <p><%= presentation.description %></p>
+      <p><%= link_to 'View', presentation.url, :class => "btn btn-info" %>
+        <%= link_to 'Control', control_presentation_path(presentation), :class => "btn btn-primary" %>
+        <%= link_to 'Edit', edit_presentation_path(presentation), :class => "btn" %>
+      </p>
+      </div>
+    </div>
+  </li>
 <% end %>
-</table>
+</ul>
 
 <br />
 
-<%= link_to 'New Presentation', new_presentation_path %>
+

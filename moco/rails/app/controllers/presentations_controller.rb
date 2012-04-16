@@ -18,7 +18,7 @@ class PresentationsController < ApplicationController
   # GET /presentations
   # GET /presentations.json
   def index
-    @presentations = Presentation.all
+    @presentations = Presentation.where(:owner => current_user.id).all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -57,6 +57,7 @@ class PresentationsController < ApplicationController
   # POST /presentations.json
   def create
     @presentation = Presentation.new(params[:presentation])
+    @presentation.owner = current_user.id
 
     respond_to do |format|
       if @presentation.save
@@ -97,6 +98,12 @@ class PresentationsController < ApplicationController
     end
   end
 
+  # GET /presentations/1/view
+  def view
+    @presentation = Presentation.find(params[:id])
+    redirect_to @presentation.url
+  end
+
   # GET /presentations/1/control
   def control
      @presentation = Presentation.find(params[:id])
@@ -104,11 +111,19 @@ class PresentationsController < ApplicationController
 
   # post /presentations/1/slideUpdate
   def slideUpdate
-    @presentation = Presentation.find(params[:id])
-    @presentation.currentSlide = params[:slide]
-    @presentation.save
 
-    render json: { :status => "succeeded" }
+    @presentation = Presentation.find(params[:id])
+
+    # check that user is owner of slides
+    if current_user.id == @presentation.owner
+      @presentation.currentSlide = params[:slide]
+      @presentation.save
+      @status = "succeeded"
+    else
+      @status = "failed"
+    end
+
+    render json: { :status => @status }
   end
 
   # get /presentations/1/status

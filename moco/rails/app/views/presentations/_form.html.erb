@@ -12,10 +12,6 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :owner %><br />
-    <%= f.number_field :owner %>
-  </div>
-  <div class="field">
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </div>
@@ -23,10 +19,9 @@
     <%= f.label :description %><br />
     <%= f.text_field :description %>
   </div>
-  <div class="field">
-    <%= f.label :currentSlide %><br />
-    <%= f.number_field :currentSlide %>
-  </div>
+  <p><label for="upload_file">Select presentation file</label> 
+  <%= file_field 'upload', 'datafile' %></p>
+
   <div class="actions">
     <%= f.submit %>
   </div>
