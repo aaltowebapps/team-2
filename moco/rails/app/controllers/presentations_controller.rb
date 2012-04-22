@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 class PresentationsController < ApplicationController
 
   # user must be logged in
@@ -42,6 +44,7 @@ class PresentationsController < ApplicationController
   def new
     @presentation = Presentation.new
 
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @presentation }
@@ -58,6 +61,13 @@ class PresentationsController < ApplicationController
   def create
     @presentation = Presentation.new(params[:presentation])
     @presentation.owner = current_user.id
+
+    # file handling
+    name = params[:slidefile].original_filename
+    digestName = Digest::MD5.hexdigest(name + current_user.id) # todo: improve
+
+    path = File.join("public/prcon", digestName)
+    File.open(path, "wb") { |f| f.write(upload["slidefile"].read) }
 
     respond_to do |format|
       if @presentation.save

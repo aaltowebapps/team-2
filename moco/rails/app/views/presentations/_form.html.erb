@@ -1,4 +1,4 @@
-<%= form_for(@presentation) do |f| %>
+<%= form_for :create, :html => {:multipart => true} do |f| %>
   <% if @presentation.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@presentation.errors.count, "error") %> prohibited this presentation from being saved:</h2>
@@ -11,18 +11,19 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :name %><br />
+  <div class="control-group">
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
-  <div class="field">
-    <%= f.label :description %><br />
-    <%= f.text_field :description %>
+  <div class="control-group">
+    <%= f.label :description, "Description (optional)" %>
+    <%= f.text_area :description, :class => "input-xlarge", :rows => "3" %>
   </div>
-  <p><label for="upload_file">Select presentation file</label> 
-  <%= file_field 'upload', 'datafile' %></p>
-
+  <div class="control-group">
+  <label for="upload_file">Select presentation file to upload:</label> 
+  <%= file_field 'upload', 'slidefile' %>
+  </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Upload", :class => "btn btn-large btn-success"%>
   </div>
 <% end %>
