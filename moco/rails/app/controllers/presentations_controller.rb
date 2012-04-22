@@ -56,23 +56,37 @@ class PresentationsController < ApplicationController
     @presentation = Presentation.find(params[:id])
   end
 
+  def upload
+
+  end
+
+  def file_upload
+    # file handling
+    name = params[:presentation][:slide_file].original_filename
+    digestName = Digest::MD5.hexdigest(name + current_user.id.to_s) + ".html"# todo: improve
+
+    file = params[:presentation][:slide_file]
+    path = File.join("public/slides", digestName)
+    File.open(path, "wb") { |f| f.write(file.read) }
+
+    # save presentation url
+    @presentation = Presentation.find(params[:id])
+    @presentation.url = "slides/" + digestName
+    @presentation.save
+
+    redirect_to :action => "index"
+  end
+
+
   # POST /presentations
   # POST /presentations.json
   def create
     @presentation = Presentation.new(params[:presentation])
     @presentation.owner = current_user.id
 
-    # file handling
-    name = params[:slidefile].original_filename
-    digestName = Digest::MD5.hexdigest(name + current_user.id) # todo: improve
-
-    path = File.join("public/prcon", digestName)
-    File.open(path, "wb") { |f| f.write(upload["slidefile"].read) }
-
     respond_to do |format|
       if @presentation.save
-        format.html { redirect_to @presentation, notice: 'Presentation was successfully created.' }
-        format.json { render json: @presentation, status: :created, location: @presentation }
+        format.html { render action: "upload" }
       else
         format.html { render action: "new" }
         format.json { render json: @presentation.errors, status: :unprocessable_entity }

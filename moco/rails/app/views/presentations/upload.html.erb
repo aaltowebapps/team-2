@@ -1,0 +1,9 @@
+<h1>Step 2: Select file to upload</h1>
+<%= form_for @presentation, :url => file_upload_presentation_path(@presentation), :html => {:multipart => true} do |f| %>
+  <div class="control-group">
+  <label for="upload_file">Select presentation file to upload:</label> 
+  <%= f.file_field :slide_file, :class => 'btn' %>
+  </div>
+  <%= f.submit "Upload" %>
+<% end %>
+

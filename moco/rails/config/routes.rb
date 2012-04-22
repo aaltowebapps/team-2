@@ -1,11 +1,12 @@
 Moco::Application.routes.draw do
 
-
   resources :presentations do
     member do
       get 'status'
       post 'slideUpdate'
       get 'control'
+      get 'upload'
+      put 'file_upload'
     end
   end
 
