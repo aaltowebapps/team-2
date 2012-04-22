@@ -12,7 +12,7 @@ var Moco = new function() {
 	};
 
 	this.update = function() {
-		$.get('http://localhost:3000/presentations/'+ Moco.id +'/status', function(data) {
+		$.get('http://slidectrl.com/presentations/'+ Moco.id +'/status', function(data) {
 				var diff = Moco.slide - data.currentSlide;
 				if(diff != 0) { // transition is required
 					if(Math.abs(diff) > 1) { // jump
