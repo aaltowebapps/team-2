@@ -63,18 +63,34 @@ class PresentationsController < ApplicationController
   def file_upload
     # file handling
     name = params[:presentation][:slide_file].original_filename
-    digestName = Digest::MD5.hexdigest(name + current_user.id.to_s) + ".html"# todo: improve
+    digestName = Digest::MD5.hexdigest(name + current_user.id.to_s + Time.now.to_s ) + ".html"# todo: improve
 
     file = params[:presentation][:slide_file]
     path = File.join("public/slides", digestName)
     File.open(path, "wb") { |f| f.write(file.read) }
+    @notice_msg = "default"
+    # js injection
+    moco_injection = "<script src=\"/assets/moco.js\"></script>
+      <script>
+	      $(document).ready(function() { Moco.init("+ params[:id] +",1000); });
+        </script></body>"
+
+    content = File.read(path)
+    if content =~ /<\/body>/
+      injected = content.gsub(/<\/body>/,  moco_injection)
+      File.open(path, "wb") { |f| f.puts injected }
+      @notice_msg = "success"
+    else # end of the body not found
+      @notice_msg = "unable to set up presentation"
+    end
 
     # save presentation url
     @presentation = Presentation.find(params[:id])
+    @presentation.currentSlide = 0
     @presentation.url = "slides/" + digestName
     @presentation.save
 
-    redirect_to :action => "index"
+    redirect_to :action => "index", :notice => @notice_msg
   end
 
 
