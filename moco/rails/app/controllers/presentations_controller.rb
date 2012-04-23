@@ -1,4 +1,9 @@
 require 'digest/md5'
+require 'pusher'
+
+Pusher.app_id = '666'
+Pusher.key = 'ea86e9b8c9fefebb4468'
+Pusher.secret = 'On Her Majesty\'s Secret Service'
 
 class PresentationsController < ApplicationController
 
@@ -69,11 +74,10 @@ class PresentationsController < ApplicationController
     path = File.join("public/slides", digestName)
     File.open(path, "wb") { |f| f.write(file.read) }
     @notice_msg = "default"
+
     # js injection
-    moco_injection = "<script src=\"/assets/moco.js\"></script>
-      <script>
-	      $(document).ready(function() { Moco.init("+ params[:id] +",1000); });
-        </script></body>"
+    method = "pusher" # pusher default
+    moco_injection = inject(params[:id], method)
 
     content = File.read(path)
     if content =~ /<\/body>/
@@ -84,15 +88,15 @@ class PresentationsController < ApplicationController
       @notice_msg = "unable to set up presentation"
     end
 
-    # save presentation url
+    # save presentation
     @presentation = Presentation.find(params[:id])
     @presentation.currentSlide = 0
     @presentation.url = "slides/" + digestName
+    @presentation.method = method
     @presentation.save
 
     redirect_to :action => "index", :notice => @notice_msg
   end
-
 
   # POST /presentations
   # POST /presentations.json
@@ -151,25 +155,68 @@ class PresentationsController < ApplicationController
 
   # post /presentations/1/slideUpdate
   def slideUpdate
-
     @presentation = Presentation.find(params[:id])
 
     # check that user is owner of slides
-    if current_user.id == @presentation.owner
-      @presentation.currentSlide = params[:slide]
-      @presentation.save
-      @status = "succeeded"
-    else
+    if current_user.id != @presentation.owner
       @status = "failed"
+      render json: {:status => @status}
     end
 
+    if @presentation.method == "pusher" #pusher controlling
+      if @presentation.currentSlide > params[:slide].to_i
+        Pusher[@presentation.id.to_s + 'p'].trigger('s-update', {:cmd => 'fwd'})
+        @presentation.currentSlide += 1
+      elsif @presentation.currentSlide < params[:slide].to_i
+        Pusher[@presentation.id.to_s + 'p'].trigger('s-update', {:cmd => 'bck'})
+        @presentation.currentSlide -= 1
+      end
+    end
+
+    if @presentation.method == "polling" #ajax-polling controlling
+      @presentation.currentSlide = params[:slide].to_i
+    end
+    @presentation.save
+
+    @status = "succeeded"
+
     render json: { :status => @status }
+
   end
 
   # get /presentations/1/status
   def status
     @presentation = Presentation.find(params[:id])
     render json: { :currentSlide => @presentation.currentSlide  }
+  end
+
+  # returns js to inject
+  def inject(id, method)
+    injection = ""
+    case method
+      when "polling" # plain ajax-polling
+        injection = "<script src=\"/assets/moco.js\"></script>
+              <script>
+                $(document).ready(function() { Moco.init("+ id +",1000); });
+              </script></body>"
+      when "pusher" # pusher
+        injection = "<script src=\"http://js.pusher.com/1.11/pusher.min.js\"></script>
+                <script>
+                  var pusher = new Pusher('" + Pusher.key + "');
+                  var channel = pusher.subscribe('" + id + "p');
+                  channel.bind('s-update', function(data) {
+                    switch(data.cmd) {
+                      case 'fwd':
+                        $(\"#jmpress\").jmpress('next');
+                        break;
+                      case 'bck':
+                        $(\"#jmpress\").jmpress('prev');
+                        break;
+                    };
+                  });
+                </script>"
+    end
+    return injection
   end
 
 end

@@ -19,6 +19,9 @@ gem 'remotipart'
 # file-magic for file type checking
 #gem 'ruby-filemagic', '~> 0.4.2'
 
+# pusher.com service
+gem 'pusher', :git => 'git://github.com/pusher/pusher-gem.git'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
