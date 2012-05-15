@@ -109,29 +109,29 @@
                 e.stopImmediatePropagation();
                 e.preventDefault();
                 
-                updateSlide(currentId, ++currentSlide);
+                updateSlide(currentId, "next");
             }
 
             function movePrevious(e) {
                 e.stopImmediatePropagation();
                 e.preventDefault();
 
-                updateSlide(currentId, --currentSlide);
+                updateSlide(currentId, "prev");
             }
 
-            function updateSlide(slideId, slide) {
+            function updateSlide(slideId, command) {
                $.ajax({
                       url: "/presentations/" + slideId + "/slideUpdate",
                       type: "POST",
                       data: {
                                id: slideId, 
-                               slide: slide},
+                               cmd: command},
                       headers: {
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                       },
                       success: function(resp){}
                   });
-                  }
+            }
 
         </script>
 

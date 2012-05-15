@@ -168,10 +168,10 @@ class PresentationsController < ApplicationController
 
       Rails.logger.info("SUCCESS!")
     if @presentation.method == "pusher" #pusher controlling
-      if @presentation.currentSlide > params[:slide].to_i
+      if params[:cmd] == "next"
         Pusher[@presentation.id.to_s + 'p'].trigger('s-update', {:cmd => 'fwd'})
         @presentation.currentSlide += 1
-      elsif @presentation.currentSlide < params[:slide].to_i
+      elsif params[:cmd] == "prev"
         Pusher[@presentation.id.to_s + 'p'].trigger('s-update', {:cmd => 'bck'})
         @presentation.currentSlide -= 1
       end
