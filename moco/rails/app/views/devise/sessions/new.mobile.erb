@@ -1,0 +1,24 @@
+<div data-role="page" data-theme="a" data-url="/users/sign_in">
+  <div data-theme="a" data-role="header">
+      <h3>
+          SlideCTRL
+      </h3>
+  </div>
+  <div data-role="content">
+  <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <div data-role="fieldcontain">
+          <fieldset data-role="controlgroup">
+              <%= f.label :email %>
+              <%= f.email_field :email %>
+          </fieldset>
+      </div>
+      <div data-role="fieldcontain">
+          <fieldset data-role="controlgroup">
+              <%= f.label :password %>
+              <%= f.password_field :password %>
+          </fieldset>
+      </div>
+      <%= f.submit "Login", "rel" => "external"%>
+<% end %>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+
+<script type="text/javascript">
+  var id = <%= @presentation.id %>;
+  var slide = <%= @presentation.currentSlide %>;
+
+  $(document).ready(function(){
+    $("#next").click(function() {
+      slide++;
+      $.ajax({
+        type: 'POST',
+        url: 'slideUpdate',
+        data: 'id='+id+'&slide='+slide,
+        success: function(){},
+        dataType: 'json'
+      }); 
+    });
+    $("#prev").click(function() {
+      slide--;
+      $.ajax({
+        type: 'POST',
+        url: 'slideUpdate',
+        data: 'id='+id+'&slide='+slide,
+        success: function(){},
+        dataType: 'json'
+      });
+    });
+  });
+
+</script>
+<div class="row-fluid">
+<div class="span6">
+  <button id="prev" class="btn">previous</button>
+  </div>
+<div class="span6">
+  <button id="next" class="btn btn-primary btn-large btn-success" style="padding: 18px 28px;">next slide</button>
+  </div>
+</div>
+<div class="row">
+  <%= link_to 'Back', presentations_path %>
+</div>

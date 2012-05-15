@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  owner: 1
+  name: MyString
+  description: MyString
+  currentSlide: 1
+
+two:
+  owner: 1
+  name: MyString
+  description: MyString
+  currentSlide: 1

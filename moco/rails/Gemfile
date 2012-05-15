@@ -22,6 +22,9 @@ gem 'remotipart'
 # pusher.com service
 gem 'pusher', :git => 'git://github.com/pusher/pusher-gem.git'
 
+# jquery mobile
+gem "jquerymobile-rails"
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

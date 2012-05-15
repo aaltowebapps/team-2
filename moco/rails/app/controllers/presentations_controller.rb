@@ -9,6 +9,7 @@ class PresentationsController < ApplicationController
 
   # user must be logged in
   before_filter :check_login
+
   after_filter :set_access_control_headers
 
   def set_access_control_headers
@@ -29,6 +30,7 @@ class PresentationsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
+      format.mobile
       format.json { render json: @presentations }
     end
   end
@@ -159,10 +161,12 @@ class PresentationsController < ApplicationController
 
     # check that user is owner of slides
     if current_user.id != @presentation.owner
+      Rails.logger.info("FAILDED!")
       @status = "failed"
       render json: {:status => @status}
     end
 
+      Rails.logger.info("SUCCESS!")
     if @presentation.method == "pusher" #pusher controlling
       if @presentation.currentSlide > params[:slide].to_i
         Pusher[@presentation.id.to_s + 'p'].trigger('s-update', {:cmd => 'fwd'})
