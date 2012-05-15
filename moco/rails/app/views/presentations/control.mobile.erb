@@ -1,40 +1,84 @@
+        <div data-role="page" data-theme="a" id="control">
+            <script type="text/javascript">
+                $("#control").live('pageinit', function() {
 
-<script type="text/javascript">
-  var id = <%= @presentation.id %>;
-  var slide = <%= @presentation.currentSlide %>;
+                   $("#next").live('tap',function(e) {
+                        moveNext(e);
+                    });
 
-  $(document).ready(function(){
-    $("#next").click(function() {
-      slide++;
-      $.ajax({
-        type: 'POST',
-        url: 'slideUpdate',
-        data: 'id='+id+'&slide='+slide,
-        success: function(){},
-        dataType: 'json'
-      }); 
-    });
-    $("#prev").click(function() {
-      slide--;
-      $.ajax({
-        type: 'POST',
-        url: 'slideUpdate',
-        data: 'id='+id+'&slide='+slide,
-        success: function(){},
-        dataType: 'json'
-      });
-    });
-  });
+                    $("#previous").live('tap',function(e) {
+                        movePrevious(e);
+                    });
 
-</script>
-<div class="row-fluid">
-<div class="span6">
-  <button id="prev" class="btn">previous</button>
-  </div>
-<div class="span6">
-  <button id="next" class="btn btn-primary btn-large btn-success" style="padding: 18px 28px;">next slide</button>
-  </div>
-</div>
-<div class="row">
-  <%= link_to 'Back', presentations_path %>
-</div>
+                    $("#next").click(function (e) {
+                        moveNext(e);
+                    });
+
+                    $("#previous").click(function (e) {
+                        movePrevious(e);
+                    });
+                });
+
+                function moveNext(e) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    
+                    updateSlide("next");
+                }
+
+                function movePrevious(e) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+
+                    updateSlide("prev");
+                }
+
+                function updateSlide(command) {
+                   $.ajax({
+                   url: "/presentations/<%= @presentation.id %>/slideUpdate",
+                          type: "POST",
+                          data: {
+                          id: <%= @presentation.id %>, 
+                                   cmd: command},
+                          headers: {
+                            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                          },
+                          success: function(resp){}
+                      });
+                }
+            </script>
+            <div data-theme="b" data-role="header">
+                <h3 id="control-header">
+                <%= @presentation.name %>
+                </h3>
+            </div>
+            <div data-role="content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <a id="previous" data-role="button" data-transition="fade" href="page1" data-icon="arrow-l" data-iconpos="left">
+                            Previous
+                        </a>
+                    </div>
+                    <div class="ui-block-b">
+                        <a id="next" data-role="button" data-transition="fade" href="page1" data-icon="arrow-r" data-iconpos="left">
+                            Next
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div data-theme="a" data-role="footer">
+                <h3>
+                    Menu
+                </h3>
+                <div data-role="navbar" data-iconpos="left">
+                    <ul>
+                        <li>
+                        <%= link_to('Logout', destroy_user_session_path, :method => :delete, :rel => "external") %>
+                        </li>
+                        <li>
+                        <%= link_to 'My presentations', presentations_path, :rel => "external" %> 
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>

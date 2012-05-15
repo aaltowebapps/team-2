@@ -11,7 +11,7 @@
                     </li>
                     <% @presentations.each do |presentation| %>
                       <li data-theme="a" data-icon="arrow-r">
-                      <a id="moco-<%= presentation.id %>" href="#control" class="presentation-item" data-mocoid="<%= presentation.id %>" data-moconame="<%= presentation.name%>" data-mocoslide="<%= presentation.currentSlide %>" data-transition="fade"><%= presentation.name %></a>
+                      <%= link_to presentation.name, control_presentation_path(presentation), :rel => "external", :"data-transition" => "slide" %>
                       </li>
                     <% end %>
                     </ul>
@@ -29,109 +29,5 @@
                 </div>
             </div>
         </div>
-        <div data-role="page" data-theme="a" id="control">
-            <div data-theme="b" data-role="header">
-                <h3 id="control-header">
-                    SlideCTRL.com
-                </h3>
-            </div>
-            <div data-role="content">
-                <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                        <a id="previous" data-role="button" data-transition="fade" href="page1" data-icon="arrow-l" data-iconpos="left">
-                            Previous
-                        </a>
-                    </div>
-                    <div class="ui-block-b">
-                        <a id="next" data-role="button" data-transition="fade" href="page1" data-icon="arrow-r" data-iconpos="left">
-                            Next
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div data-theme="a" data-role="footer">
-                <h3>
-                    Menu
-                </h3>
-                <div data-role="navbar" data-iconpos="left">
-                    <ul>
-                        <li>
-                          <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>
-                        </li>
-                        <li>
-                            <a href="#index" class="presentation-list" data-theme="" data-icon="home">
-                                Presentations
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <script>
-            var currentId = -1;
-            var currentSlide = -1;
 
-            $("#next").live('tap',function(e) {
-                moveNext(e);
-            });
-
-
-            $("#previous").live('tap',function(e) {
-                movePrevious(e);
-            });
-
-            $("#next").click(function (e) {
-                moveNext(e);
-            });
-
-            $("#previous").click(function (e) {
-                movePrevious(e);
-            });
-
-            $(".presentation-item").click(function (e) {
-                // set globals
-                currentId = e.currentTarget.dataset["mocoid"];
-                currentSlide = $("#moco-" + currentId).data("mocoslide");
-
-                $("#control-header").html(e.currentTarget.dataset["moconame"]);
-            });
-
-            $(".presentation-list").click(function (e) {
-                // save progress
-                $("#moco-" + currentId).data("mocoslide", currentSlide);
-                currentId = -1;
-                currentSlide = -1;
-
-                $("#control-header").html(e.currentTarget.dataset["moconame"]);
-            });
-
-            function moveNext(e) {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                
-                updateSlide(currentId, "next");
-            }
-
-            function movePrevious(e) {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-
-                updateSlide(currentId, "prev");
-            }
-
-            function updateSlide(slideId, command) {
-               $.ajax({
-                      url: "/presentations/" + slideId + "/slideUpdate",
-                      type: "POST",
-                      data: {
-                               id: slideId, 
-                               cmd: command},
-                      headers: {
-                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                      },
-                      success: function(resp){}
-                  });
-            }
-
-        </script>
 
