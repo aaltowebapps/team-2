@@ -71,18 +71,21 @@
             var currentId = -1;
             var currentSlide = -1;
 
+            $("#next").live('tap',function(e) {
+                moveNext(e);
+            });
+
+
+            $("#previous").live('tap',function(e) {
+                movePrevious(e);
+            });
+
             $("#next").click(function (e) {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                
-                updateSlide(currentId, ++currentSlide);
+                moveNext(e);
             });
 
             $("#previous").click(function (e) {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-
-                updateSlide(currentId, --currentSlide);
+                movePrevious(e);
             });
 
             $(".presentation-item").click(function (e) {
@@ -101,6 +104,20 @@
 
                 $("#control-header").html(e.currentTarget.dataset["moconame"]);
             });
+
+            function moveNext(e) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                
+                updateSlide(currentId, ++currentSlide);
+            }
+
+            function movePrevious(e) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+
+                updateSlide(currentId, --currentSlide);
+            }
 
             function updateSlide(slideId, slide) {
                $.ajax({
